@@ -40,7 +40,7 @@ Welcome to the GitHub repository for the mobile app game based on the board game
 To get started with the game, follow these steps:
 
 1. **Clone the Repository:**
-git clone https://github.com/your-username/PetitesBourgades.git
+git clone https://github.com/NielsOuvrard/PetitesBourgades.git
 
 2. **Install Dependencies:**
 cd les-petites-bourgades-mobile
