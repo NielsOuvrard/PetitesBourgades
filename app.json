@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "PetiteBourgades",
-    "slug": "PetiteBourgades",
+    "name": "PetitesBourgades",
+    "slug": "PetitesBourgades",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
