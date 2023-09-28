@@ -40,7 +40,7 @@ Welcome to the GitHub repository for the mobile app game based on the board game
 To get started with the game, follow these steps:
 
 1. **Clone the Repository:**
-git clone https://github.com/your-username/les-petites-bourgades-mobile.git
+git clone https://github.com/your-username/PetitesBourgades.git
 
 2. **Install Dependencies:**
 cd les-petites-bourgades-mobile
@@ -52,12 +52,12 @@ npm start
 1. **Customization:**
 You can customize the game rules, graphics, and more in the configuration files located in the `config/` directory.
 
-For more detailed instructions and development guidelines, please refer to the [Documentation](docs/README.md).
+For more detailed instructions and development guidelines, please refer to the [Documentation](https://www.youtube.com/watch?v=dQw4w9WgXcQ).
 
 ## Contributing
 
-We welcome contributions from the open-source community to help improve this project. Whether you're a developer, designer, or tester, your contributions are valuable. Please review our [Contributing Guidelines](CONTRIBUTING.md) for more information.
+We welcome contributions from the open-source community to help improve this project. Whether you're a developer, designer, or tester, your contributions are valuable. Please review our [Contributing Guidelines](https://www.youtube.com/watch?v=dQw4w9WgXcQ) for more information.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the NIELS' CORP License - see the [LICENSE](https://www.youtube.com/watch?v=dQw4w9WgXcQ) file for details.
