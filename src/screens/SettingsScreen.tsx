@@ -35,7 +35,7 @@ const SettingsScreen: React.FC = () => {
                 <Slider />
             </View>
 
-            <Button title="Go Back" onPress={goBack} />
+            <Button title={t('go_back')} onPress={goBack} />
         </View>
     );
 };

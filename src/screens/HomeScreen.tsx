@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, Alert } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Button from '../components/tools/Button';
 import { useNavigation } from '@react-navigation/native';
@@ -9,20 +9,20 @@ import { NavigationProp, ParamListBase } from '@react-navigation/native';
 const HomeScreen: React.FC = () => {
     const { t } = useTranslation();
 
-    const handleButtonPress = () => {
-        Alert.alert('Button Pressed');
-    };
-
     const navigation: NavigationProp<ParamListBase> = useNavigation();
 
     const openSettings = () => {
         navigation.navigate("Settings");
     };
 
+    const openPlay = () => {
+        navigation.navigate("Play");
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{t('title')}</Text>
-            <Button style={styles.button} title={t('play')} onPress={handleButtonPress} />
+            <Button style={styles.button} title={t('play')} onPress={openPlay} />
             <Button style={styles.button} title={t('settings')} onPress={openSettings} />
         </View>
     );

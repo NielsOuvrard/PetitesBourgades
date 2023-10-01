@@ -3,14 +3,21 @@ import { View, Text, StyleSheet } from 'react-native';
 
 interface CardProps {
     title: string;
-    content: string;
+    content?: string;
+    children?: React.ReactNode;
 }
 
-const Card: React.FC<CardProps> = ({ title, content }) => {
+const Card: React.FC<CardProps> = ({ title, content, children }) => {
     return (
         <View style={styles.card}>
             <Text style={styles.title}>{title}</Text>
-            <Text style={styles.content}>{content}</Text>
+            {
+                content && content.length > 0 &&
+                <Text style={styles.content}>{content}</Text>
+            }
+            {
+                children
+            }
         </View>
     );
 };
