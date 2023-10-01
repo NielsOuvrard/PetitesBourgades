@@ -1,5 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { colors } from '../../utils/colors';
 
 interface ButtonProps {
     title: string;
@@ -16,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({ title, onPress }) => {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#4285F4', // Google Blue
+        backgroundColor: colors.primary, // Google Blue
         borderRadius: 24, // Adjust as needed for your design
         paddingVertical: 12,
         paddingHorizontal: 24,
