@@ -30,44 +30,28 @@ export const allTypesBatiment = [
     "blue", "orange", "red", "green", "grey", "yellow", "black", "pink"
 ]
 
-export interface ResourceType {
-    type: string;
-    x: number;
-    y: number;
-}
-
 export interface BatimentType {
     name: string;
     type: string;
-    resources?: ResourceType[];
+    resources?: string[][];
 }
 
 export const batiments: BatimentType[] = [
     {
         type: "blue", name: "house",
-        resources: [
-            {
-                type: 'glass',
-                x: 0,
-                y: 0,
-            },
-            {
-                type: 'wheat',
-                x: 0,
-                y: 1,
-            },
-            {
-                type: 'brick',
-                x: 1,
-                y: 0,
-            },
-        ],
+        resources: [['glass', 'brick'], ['wheat', '']],
     },
     { type: "orange", name: "abbey" },
-    { type: "orange", name: "chapel" },
+    {
+        type: "orange", name: "chapel",
+        resources: [['stone', 'glass', 'stone'], ['glass', '', '']],
+    },
     { type: "orange", name: "cloister" },
     { type: "orange", name: "temple" },
-    { type: "red", name: "farm" },
+    {
+        type: "red", name: "farm",
+        resources: [['wheat', 'wheat'], ['wood', 'wood']],
+    },
     { type: "red", name: "attic" },
     { type: "red", name: "greenhouse" },
     { type: "red", name: "orchard" },
@@ -75,70 +59,30 @@ export const batiments: BatimentType[] = [
     { type: "green", name: "salle_des_fetes" },
     { type: "green", name: "hostel" },
     {
-        type: "green", name: "tavern", resources: [
-            {
-                type: 'brick',
-                x: 0,
-                y: 0,
-            },
-            {
-                type: 'brick',
-                x: 1,
-                y: 0,
-            },
-            {
-                type: 'glass',
-                x: 2,
-                y: 0,
-            },
-        ],
+        type: "green",
+        name: "tavern",
+        resources: [['brick', 'brick', 'glass']],
     },
     { type: "grey", name: "fountain" },
     { type: "grey", name: "grindstone" },
     { type: "grey", name: "grange" },
     {
-        type: "grey", name: "well", resources: [
-            {
-                type: 'stone',
-                x: 0,
-                y: 0,
-            },
-            {
-                type: 'wood',
-                x: 0,
-                y: 1,
-            },
-        ],
+        type: "grey", name: "well", resources: [['stone', 'wood']],
     },
     { type: "yellow", name: "bakery" },
     { type: "yellow", name: "market" },
     { type: "yellow", name: "tailor" },
     {
         type: "yellow", name: "theater", resources: [
-            {
-                type: 'wood',
-                x: 0,
-                y: 0,
-            },
-            {
-                type: 'glass',
-                x: 1,
-                y: 0,
-            },
-            {
-                type: 'wood',
-                x: 2,
-                y: 0,
-            },
-            {
-                type: 'stone',
-                x: 1,
-                y: 1,
-            },
+            ['wood', 'glass', 'wood'],
+            ['', 'stone', ''],
         ],
     },
     { type: "black", name: "bank" },
-    { type: "black", name: "factory" },
+    {
+        type: "black", name: "factory",
+        resources: [['brick', 'stone', 'stone', 'brick'], ['wood', '', '', '']],
+    },
     { type: "black", name: "trading_post" },
     { type: "black", name: "warehouse" },
     { type: "pink", name: "architects_guild" },

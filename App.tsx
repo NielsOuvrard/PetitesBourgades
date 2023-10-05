@@ -20,7 +20,7 @@ export default function App() {
           <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Play" component={PlayScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Game" component={Game} options={{ headerShown: false }} />
+          <Stack.Screen name="Game" component={Game} />
         </Stack.Navigator>
       </NavigationContainer>
     </I18nextProvider>

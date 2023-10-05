@@ -1,18 +1,18 @@
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Card from '../components/tools/Card';
 import MaterialCard from '../components/tools/MaterialCard';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProp, ParamListBase } from '@react-navigation/native';
 
-import { allTypesBatiment, BatimentType, batiments, ResourceType, materialList, MaterialType } from '../utils/GameData'
+import { allTypesBatiment, BatimentType, batiments, materialList, MaterialType } from '../utils/GameData'
 
 const rows = 4;
 const cols = 4;
 
 type Cell = {
-    value: number;
+    material?: MaterialType;
 };
 
 type GameMap = Cell[][];
@@ -22,27 +22,41 @@ function fillEmptyMap(): GameMap {
     for (let i = 0; i < rows; i++) {
         map.push([]);
         for (let j = 0; j < cols; j++) {
-            map[i].push({ value: 0 });
+            map[i].push({});
         }
     }
     return map;
 }
-
+type Status = 'BUILD' | 'CHOOSE_MATERIAL' | 'DROP_MATERIAL';
+let status: Status = 'CHOOSE_MATERIAL';
 
 const Game: React.FC = () => {
     const [map, setMap] = React.useState<GameMap>(fillEmptyMap);
+    const [selectedMaterial, setSelectedMaterial] = React.useState<MaterialType | undefined>(undefined);
+    const [selectedBatiment, setSelectedBatiment] = React.useState<BatimentType | undefined>(undefined);
+
+    const findThisMaterial = (name: string) => {
+        return materialList.find((material) => material.name === name);
+    }
+
+    const fillWithThis = (cell: Cell) => {
+        if (selectedMaterial && !cell.material && status === 'DROP_MATERIAL') {
+            cell.material = selectedMaterial;
+            setMap([...map]);
+            status = 'CHOOSE_MATERIAL';
+        }
+    }
 
     const { t } = useTranslation();
 
     const nameBatimentsSelected = [
         "house",
-        "well",
-        "mill",
-        "monument",
-        "temple",
+        "chapel",
+        "farm",
         "tavern",
+        "well",
         "theater",
-        "tower",
+        "factory",
     ];
 
     const batimentsSelected: BatimentType[] = nameBatimentsSelected.map((name) => {
@@ -51,15 +65,15 @@ const Game: React.FC = () => {
 
 
     const materials = [
-        { content: 'wood', title: 'Wood' },
-        { content: 'wheat', title: 'Wheat' },
-        { content: 'brick', title: 'Brick' },
-        { content: 'glass', title: 'Glass' },
-        { content: 'stone', title: 'Stone' },
+        'wood',
+        'wheat',
+        'brick',
+        'glass',
+        'stone',
     ];
 
     const colorAccordingToType = (type: string) => {
-        let color = "lightgreen";
+        let color = "white";
         materialList.forEach((item: MaterialType) => {
             if (item.name === type) {
                 color = item.color;
@@ -69,23 +83,53 @@ const Game: React.FC = () => {
     }
 
     const sizeCardX = (batiment: BatimentType) => {
-        let size = 0;
-        batiment.resources?.forEach((resource) => {
-            if (resource.x > size) {
-                size = resource.x;
-            }
-        });
-        return size;
+        if (!batiment.resources) {
+            return 0;
+        }
+        return batiment.resources[0].length;
     }
 
     const sizeCardY = (batiment: BatimentType) => {
-        let size = 0;
-        batiment.resources?.forEach((resource) => {
-            if (resource.y > size) {
-                size = resource.y;
-            }
+        return batiment.resources?.length ?? 0;
+    }
+
+    const buildHere = (rowIndex: number, cellIndex: number) => {
+        console.log("buildHere : ", rowIndex, cellIndex);
+        if (status !== 'BUILD' || !selectedBatiment) {
+            return;
+        }
+        let couldBuild = true;
+        selectedBatiment.resources?.forEach((resourceY, y) => {
+            resourceY.forEach((resource, x) => {
+                if (resource === '') {
+                    return;
+                }
+                const material = findThisMaterial(resource); // check if material is undefined, even if it should not be
+                if (!material) {
+                    return;
+                }
+                // invert x and y because of the map
+                if (map[rowIndex + x][cellIndex + y].material?.name !== material.name) {
+                    couldBuild = false;
+                }
+            });
         });
-        return size;
+        console.log("couldBuild : ", couldBuild);
+        if (!couldBuild) {
+            return;
+        }
+        selectedBatiment.resources?.forEach((resourceY, indexY) => {
+            resourceY.forEach((resource, indexX) => {
+                if (resource === '') {
+                    return;
+                }
+                const material = findThisMaterial(resource); // check if material is undefined, even if it should not be
+                if (!material) {
+                    return;
+                }
+                map[rowIndex + indexY][cellIndex + indexX].material = undefined;
+            });
+        });
     }
 
     return (
@@ -100,25 +144,37 @@ const Game: React.FC = () => {
                 <View style={{ flexDirection: 'row' }}>
                     {batimentsSelected.map((batiment) => {
                         return (
-                            <Card key={batiment.name} title={t('batiments.' + batiment.name)} content={batiment.name}>
-                                <View style={{ flexDirection: 'row', width: (sizeCardX(batiment) * 32) + 40, height: (sizeCardY(batiment) * 32) + 40 }}>
-                                    {batiment.resources?.map((resource) => {
-                                        return (
-                                            <View
-                                                key={`${resource.x}-${resource.y}-${resource.type}`}
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: resource.y * 32,
-                                                    left: resource.x * 32,
-                                                    backgroundColor: colorAccordingToType(resource.type) ?? 'lightgreen',
-                                                    width: 30,
-                                                    height: 30,
-                                                    marginVertical: 4,
-                                                }} />
-                                        );
-                                    })}
-                                </View>
-                            </Card>
+                            <TouchableOpacity key={batiment.name} onPress={() => { setSelectedBatiment(batiment), status = 'BUILD' }}>
+                                <Card title={t('batiments.' + batiment.name)} content={batiment.name}>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        width: (sizeCardX(batiment) * 32) + 40,
+                                        height: (sizeCardY(batiment) * 32) + 40
+                                    }}>
+                                        {batiment.resources?.map((resourceY, indexY) => {
+                                            return (
+                                                <View style={{ flexDirection: 'column' }} key={`${indexY}`}>
+                                                    {resourceY.map((resource, indexX) => {
+                                                        return (
+                                                            <View
+                                                                key={`${indexX}-${indexY}`}
+                                                                style={{
+                                                                    position: 'absolute',
+                                                                    top: indexY * 32,
+                                                                    left: indexX * 32,
+                                                                    backgroundColor: colorAccordingToType(resource),
+                                                                    width: 30,
+                                                                    height: 30,
+                                                                    marginVertical: 4,
+                                                                }} />
+                                                        );
+                                                    })}
+                                                </View>
+                                            );
+                                        })}
+                                    </View>
+                                </Card>
+                            </TouchableOpacity>
                         );
                     })}
                 </View>
@@ -131,16 +187,33 @@ const Game: React.FC = () => {
                         <View key={rowIndex} style={{ flexDirection: 'column' }}>
                             {row.map((cell, cellIndex) => {
                                 return (
-                                    <View
-                                        key={cellIndex}
-                                        style={{
-                                            backgroundColor: 'lightgreen',
-                                            width: 60,
-                                            height: 60,
-                                            marginVertical: 4,
-                                            marginHorizontal: 4,
-                                            alignSelf: 'center'
-                                        }} />
+                                    <TouchableOpacity key={cellIndex} onPress={() => {
+                                        fillWithThis(cell),
+                                            console.log("rowIndex : ", rowIndex, " cellIndex : ", cellIndex),
+                                            buildHere(rowIndex, cellIndex)
+                                    }}>
+                                        <View
+                                            key={cellIndex}
+                                            style={{
+                                                backgroundColor: 'lightgreen',
+                                                width: 60,
+                                                height: 60,
+                                                marginVertical: 4,
+                                                marginHorizontal: 4,
+                                                alignSelf: 'center'
+                                            }} >
+                                            {cell.material && (
+                                                <View
+                                                    style={{
+                                                        backgroundColor: colorAccordingToType(cell.material.name),
+                                                        width: 30,
+                                                        height: 30,
+                                                        margin: 4, // ?
+                                                        alignSelf: 'center',
+                                                    }} />
+                                            )}
+                                        </View>
+                                    </TouchableOpacity>
                                 );
                             })}
                         </View>
@@ -156,7 +229,9 @@ const Game: React.FC = () => {
                 <View style={{ flexDirection: 'row' }}>
                     {materials.map((material) => {
                         return (
-                            <MaterialCard key={material.content} style={{ width: 100, height: 100 }} content={material.content} title={t('materials.' + material.content)} />
+                            <TouchableOpacity key={material} onPress={() => { setSelectedMaterial(findThisMaterial(material)), status = 'DROP_MATERIAL' }}>
+                                <MaterialCard style={{ width: 100, height: 100 }} content={material} title={t('materials.' + material)} />
+                            </TouchableOpacity>
                         );
                     })}
                 </View>
